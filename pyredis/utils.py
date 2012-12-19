@@ -1,4 +1,4 @@
-from redis.client import Redis
+from pyredis.client import Redis
 
 def from_url(url, db=None, **kwargs):
     """Returns an active Redis client generated from the given database URL.

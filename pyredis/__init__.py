@@ -1,11 +1,11 @@
-from redis.client import Redis, StrictRedis
-from redis.connection import (
+from pyredis.client import Redis, StrictRedis
+from pyredis.connection import (
     ConnectionPool,
     Connection,
     UnixDomainSocketConnection
 )
-from redis.utils import from_url
-from redis.exceptions import (
+from pyredis.utils import from_url
+from pyredis.exceptions import (
     AuthenticationError,
     ConnectionError,
     DataError,

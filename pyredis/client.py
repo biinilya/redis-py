@@ -4,10 +4,10 @@ import datetime
 import sys
 import warnings
 import time as mod_time
-from redis._compat import (b, izip, imap, iteritems, dictkeys, dictvalues,
+from pyredis._compat import (b, izip, imap, iteritems, dictkeys, dictvalues,
                            basestring, long, nativestr, urlparse, bytes)
-from redis.connection import ConnectionPool, UnixDomainSocketConnection
-from redis.exceptions import (
+from pyredis.connection import ConnectionPool, UnixDomainSocketConnection
+from pyredis.exceptions import (
     ConnectionError,
     DataError,
     RedisError,
@@ -1029,7 +1029,7 @@ class StrictRedis(object):
         or as **kwargs, in the form of: name1=score1, name2=score2, ...
 
         The following example would add four values to the 'my-key' key:
-        redis.zadd('my-key', 1.1, 'name1', 2.2, 'name2', name3=3.3, name4=4.4)
+        pyredis.zadd('my-key', 1.1, 'name1', 2.2, 'name2', name3=3.3, name4=4.4)
         """
         pieces = []
         if args:
@@ -1422,7 +1422,7 @@ class Redis(StrictRedis):
         or as **kwargs, in the form of: name1=score1, name2=score2, ...
 
         The following example would add four values to the 'my-key' key:
-        redis.zadd('my-key', 'name1', 1.1, 'name2', 2.2, name3=3.3, name4=4.4)
+        pyredis.zadd('my-key', 'name1', 1.1, 'name2', 2.2, name3=3.3, name4=4.4)
         """
         pieces = []
         if args:
@@ -1944,15 +1944,15 @@ class Lock(object):
             else:
                 timeout_at = Lock.LOCK_FOREVER
             timeout_at = float(timeout_at)
-            if self.redis.setnx(self.name, timeout_at):
+            if self.pyredis.setnx(self.name, timeout_at):
                 self.acquired_until = timeout_at
                 return True
             # We want blocking, but didn't acquire the lock
             # check to see if the current lock is expired
-            existing = float(self.redis.get(self.name) or 1)
+            existing = float(self.pyredis.get(self.name) or 1)
             if existing < unixtime:
                 # the previous lock is expired, attempt to overwrite it
-                existing = float(self.redis.getset(self.name, timeout_at) or 1)
+                existing = float(self.pyredis.getset(self.name, timeout_at) or 1)
                 if existing < unixtime:
                     # we successfully acquired the lock
                     self.acquired_until = timeout_at
@@ -1965,8 +1965,8 @@ class Lock(object):
         "Releases the already acquired lock"
         if self.acquired_until is None:
             raise ValueError("Cannot release an unlocked lock")
-        existing = float(self.redis.get(self.name) or 1)
+        existing = float(self.pyredis.get(self.name) or 1)
         # if the lock time is in the future, delete the lock
         if existing >= self.acquired_until:
-            self.redis.delete(self.name)
+            self.pyredis.delete(self.name)
         self.acquired_until = None
