@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 
-from redis import __version__
+from pyredis import __version__
 
 try:
     from setuptools import setup
